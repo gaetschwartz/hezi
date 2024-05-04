@@ -1,0 +1,102 @@
+[package]
+name = "hezi"
+version = "0.1.0"
+edition = "2021"
+default-run = "hezi"
+license = "MIT"
+description = "A fast, flexible, and powerful archive tool"
+homepage = "https://github.com/gaetschwartz/hezi"
+documentation = "https://docs.rs/hezi"
+repository = "https://github.com/gaetschwartz/hezi"
+readme = "README.md"
+
+[[bin]]
+name = "hezi"
+path = "src/cli/main.rs"
+required-features = ["cli"]
+
+[[bin]]
+name = "nu_plugin_hezi"
+path = "src/nu_plugin/main.rs"
+required-features = ["nu_plugin"]
+
+[features]
+default = [
+  "nu_plugin",
+  "cli",
+  "multithreading",
+  "all_codecs",
+  "all_archive_formats",
+]
+
+nu_plugin = ["dep:nu-plugin", "dep:glob"]
+cli = [
+  "dep:clap",
+  "dep:anstyle",
+  "dep:nu-table",
+  "dep:nu-color-config",
+  "dep:terminal_size",
+  "dep:glob",
+]
+multithreading = ["zstd/zstdmt"]
+
+# archive formats
+all_archive_formats = ["zip_archive", "tar_archive", "sevenz_archive"]
+zip_archive = ["dep:zip"]
+tar_archive = ["dep:tar"]
+iso_archive = ["dep:cdfs"]
+sevenz_archive = ["dep:sevenz-rust"]
+
+# codecs
+all_codecs = [
+  "zstd_codecs",
+  "bzip2_codecs",
+  "aes_codecs",
+  "deflate_codecs",
+  "lzma_codecs",
+]
+zstd_codecs = ["dep:zstd", "sevenz-rust/zstd", "zip/zstd"]
+bzip2_codecs = ["dep:bzip2", "sevenz-rust/bzip2", "zip/bzip2"]
+aes_codecs = ["sevenz-rust/aes", "zip/aes-crypto"]
+deflate_codecs = ["zip/deflate"]
+lzma_codecs = ["dep:rust-lzma", "sevenz-rust/compress"]
+
+
+[dependencies]
+# cdfs = { git = "https://git.sr.ht/~az1/iso9660-rs", rev = "8cc434a319832ae43d1c7685477809d75f313990", optional = true }
+cdfs = { version = "0.2.3", optional = true }
+byte-unit = "5.1.4"
+bzip2 = { version = "0.4.4", optional = true }
+chrono = { version = "0.4.37", features = ["serde"] }
+flate2 = { version = "1.0.28" }
+glob = { version = "0.3.1", optional = true }
+
+rust-lzma = { version = "0.6.0", optional = true }
+sevenz-rust = { version = "0.6.0", default-features = false, optional = true }
+tar = { version = "0.4.40", optional = true }
+zip = { version = "0.6.6", default-features = false, features = [
+  "time",
+], optional = true }
+zstd = { version = "0.13.1", optional = true }
+strum = { version = "0.26", features = ["derive"] }
+serde = "1.0.197"
+typetag = "0.2.16"
+
+serde_json = { version = "1.0.115", features = ["preserve_order"] }
+clap = { version = "4.5.4", features = [
+  "derive",
+  "unstable-styles",
+], optional = true }
+terminal_size = { version = "0.3.0", optional = true }
+num = { version = "0.4.1" }
+anstyle = { version = "1.0.6", optional = true }
+log = "0.4.21"
+env_logger = "0.11.3"
+walkdir = "2.5.0"
+rayon = "1.10.0"
+
+# nu deps
+nu-protocol = { version = "0.92.1" }
+nu-color-config = { version = "0.92.1", optional = true }
+nu-plugin = { version = "0.92.1", optional = true }
+nu-table = { version = "0.92.1", optional = true }

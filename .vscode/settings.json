@@ -1,0 +1,10 @@
+{
+  "rust-analyzer.check.command": "clippy",
+  "[rust]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll": "explicit"
+    }
+  },
+  "editor.formatOnSave": true
+}
